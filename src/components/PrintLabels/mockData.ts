@@ -6,7 +6,7 @@ const mockData: PrintLabels = {
   labels: [
     {
       id: "wfs-1",
-      previouslyPrinted: true
+      previouslyPrinted: true,
     },
     {
       id: "wfs-2",

@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "5a135bab525ccb76a050";
+/******/ 	var hotCurrentHash = "15ee3a3b223e39a3bc35";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -817,16 +817,33 @@ const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const Hello_1 = __webpack_require__(/*! ./components/Hello */ "./src/components/Hello.tsx");
 const createContext_1 = __webpack_require__(/*! ./createContext */ "./src/createContext.ts");
 const PrintLabels_1 = __webpack_require__(/*! ./components/PrintLabels */ "./src/components/PrintLabels/index.ts");
+exports.PrintLabelsContext = PrintLabels_1.PrintLabelsContext;
 const Orders_1 = __webpack_require__(/*! ./components/Orders */ "./src/components/Orders/index.ts");
 const initializer = {
-    printLabels: PrintLabels_1.mockData,
-    orderData: Orders_1.mockData
+    supplierId: 1,
+    fulfillmentCustomerId: 1,
+    isAdmin: true,
+    applicationState: {
+        products: {
+            id: 'test'
+        },
+        orders: Orders_1.mockData
+    }
 };
 const applicationReducer = (state, action) => {
     switch (action.type) {
         case "add":
-            return Object.assign(Object.assign({}, state), { printLabels: Object.assign(Object.assign({}, state.printLabels), { labels: [
-                        ...state.printLabels.labels,
+            return Object.assign(Object.assign({}, state), { orderData: [
+                    ...state.applicationState.orderData,
+                    {
+                        id: "WHS-123",
+                        status: Orders_1.OrderStatus.Received,
+                        destinationWarehouse: Orders_1.DestinationWarehouse.Cranberry,
+                        sourceWarehouse: "California",
+                        expectedShipDate: "12/20/2020"
+                    }
+                ], printLabels: Object.assign(Object.assign({}, state.applicationState.printLabels), { labels: [
+                        ...state.applicationState.printLabels.labels,
                         {
                             id: "1",
                             previouslyPrinted: true
@@ -838,11 +855,9 @@ const applicationReducer = (state, action) => {
             throw new Error();
     }
 };
-const PrintLabelsContext = createContext_1.createApplicationContext(undefined);
-exports.PrintLabelsContext = PrintLabelsContext;
 const ShowOrdersContext = createContext_1.createApplicationContext(undefined);
 exports.ShowOrdersContext = ShowOrdersContext;
-const ApplicationDispatchContext = createContext_1.createApplicationContext(applicationReducer);
+const ApplicationDispatchContext = createContext_1.createApplicationContext(initializer);
 exports.ApplicationDispatchContext = ApplicationDispatchContext;
 const App = () => {
     const [applicationState, applicationDispatch] = react_1.useReducer(applicationReducer, initializer);
@@ -851,8 +866,8 @@ const App = () => {
     };
     return (react_1.default.createElement(react_1.default.Fragment, null,
         react_1.default.createElement("button", { onClick: handleClick }, "Add More Rows!"),
-        react_1.default.createElement(ApplicationDispatchContext.Provider, { value: applicationDispatch },
-            react_1.default.createElement(PrintLabelsContext.Provider, { value: applicationState.printLabels },
+        react_1.default.createElement(ApplicationDispatchContext.Provider, { value: applicationState },
+            react_1.default.createElement(PrintLabels_1.PrintLabelsContext.Provider, { value: applicationState.printLabels },
                 react_1.default.createElement(ShowOrdersContext.Provider, { value: applicationState.orderData },
                     react_1.default.createElement(Hello_1.Hello, null))))));
 };
@@ -880,6 +895,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const app_1 = __webpack_require__(/*! ../app */ "./src/app.tsx");
+const PrintLabels_1 = __webpack_require__(/*! ../components/PrintLabels */ "./src/components/PrintLabels/index.ts");
 // 'HelloProps' describes the shape of props.
 // State is never set so we use the '{}' type.
 exports.Hello = () => {
@@ -887,7 +903,7 @@ exports.Hello = () => {
         react_1.default.createElement(FakeComponentForTree, null)));
 };
 const FakeComponentForTree = () => {
-    const applicationDispatch = react_1.useContext(app_1.ApplicationDispatchContext);
+    const { applicationDispatch } = react_1.useContext(app_1.ApplicationDispatchContext);
     const handleClick = () => {
         applicationDispatch({ type: "add" });
     };
@@ -896,24 +912,17 @@ const FakeComponentForTree = () => {
         react_1.default.createElement(FakeComponentForTree2, null)));
 };
 const FakeComponentForTree2 = () => {
-    const applicationDispatch = react_1.useContext(app_1.ApplicationDispatchContext);
+    const { applicationDispatch } = react_1.useContext(app_1.ApplicationDispatchContext);
+    const mockOrderData = react_1.useContext(app_1.ShowOrdersContext);
     const handleClick = () => {
         applicationDispatch({ type: "reset" });
     };
     return (react_1.default.createElement(react_1.default.Fragment, null,
-        applicationDispatch ? react_1.default.createElement("button", { onClick: handleClick }, "More Context Rows?!") : react_1.default.createElement("span", null, "No Function Available"),
-        react_1.default.createElement(FakeComponentForTree3, null)));
-};
-const FakeComponentForTree3 = () => {
-    const mockOrderData = react_1.useContext(app_1.ShowOrdersContext);
-    const mockLabelData = react_1.useContext(app_1.PrintLabelsContext);
-    return (react_1.default.createElement(react_1.default.Fragment, null,
         mockOrderData.map(({ id }) => {
             return react_1.default.createElement("div", { key: id }, id);
         }),
-        mockLabelData.labels.map(({ id }) => {
-            return react_1.default.createElement("div", { key: id }, id);
-        })));
+        applicationDispatch ? (react_1.default.createElement("button", { onClick: handleClick }, "More Context Rows?!")) : (react_1.default.createElement("span", null, "No Function Available")),
+        react_1.default.createElement(PrintLabels_1.WithPrintLabelsContext, null)));
 };
 
 
@@ -1000,6 +1009,42 @@ exports.mockData = mockData;
 
 /***/ }),
 
+/***/ "./src/components/PrintLabels/PrintLabel.tsx":
+/*!***************************************************!*\
+  !*** ./src/components/PrintLabels/PrintLabel.tsx ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const createContext_1 = __webpack_require__(/*! ../../createContext */ "./src/createContext.ts");
+const PrintLabelsContext = createContext_1.createApplicationContext(undefined);
+exports.PrintLabelsContext = PrintLabelsContext;
+const WithPrintLabelsContext = () => {
+    const mockLabelData = react_1.useContext(PrintLabelsContext);
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement(PrintLabelData, Object.assign({}, mockLabelData))));
+};
+exports.WithPrintLabelsContext = WithPrintLabelsContext;
+const PrintLabelData = (props) => {
+    return (react_1.default.createElement(react_1.default.Fragment, null, props.labels.map(({ id }) => {
+        return react_1.default.createElement("div", { key: id }, id);
+    })));
+};
+
+
+/***/ }),
+
 /***/ "./src/components/PrintLabels/index.ts":
 /*!*********************************************!*\
   !*** ./src/components/PrintLabels/index.ts ***!
@@ -1012,6 +1057,9 @@ exports.mockData = mockData;
 Object.defineProperty(exports, "__esModule", { value: true });
 var mockData_1 = __webpack_require__(/*! ./mockData */ "./src/components/PrintLabels/mockData.ts");
 exports.mockData = mockData_1.mockData;
+var PrintLabel_1 = __webpack_require__(/*! ./PrintLabel */ "./src/components/PrintLabels/PrintLabel.tsx");
+exports.WithPrintLabelsContext = PrintLabel_1.WithPrintLabelsContext;
+exports.PrintLabelsContext = PrintLabel_1.PrintLabelsContext;
 
 
 /***/ }),
@@ -1032,7 +1080,7 @@ const mockData = {
     labels: [
         {
             id: "wfs-1",
-            previouslyPrinted: true
+            previouslyPrinted: true,
         },
         {
             id: "wfs-2",

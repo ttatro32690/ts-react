@@ -1,9 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import {
   ShowOrdersContext,
-  PrintLabelsContext,
   ApplicationDispatchContext
 } from "../app";
+
+import { WithPrintLabelsContext } from "../components/PrintLabels";
 
 export interface HelloProps {
   compiler: string;
@@ -21,7 +22,7 @@ export const Hello = () => {
 };
 
 const FakeComponentForTree = () => {
-  const applicationDispatch = useContext(ApplicationDispatchContext);
+  const {applicationDispatch} = useContext(ApplicationDispatchContext);
 
   const handleClick = () => {
     applicationDispatch({ type: "add" });
@@ -36,7 +37,8 @@ const FakeComponentForTree = () => {
 };
 
 const FakeComponentForTree2 = () => {
-  const applicationDispatch = useContext(ApplicationDispatchContext);
+  const {applicationDispatch} = useContext(ApplicationDispatchContext);
+  const mockOrderData = useContext(ShowOrdersContext);
 
   const handleClick = () => {
     applicationDispatch({ type: "reset" });
@@ -44,23 +46,15 @@ const FakeComponentForTree2 = () => {
 
   return (
     <>
-    {applicationDispatch ? <button onClick={handleClick}>More Context Rows?!</button> : <span>No Function Available</span>}
-      <FakeComponentForTree3 />
-    </>
-  );
-};
-
-const FakeComponentForTree3 = () => {
-  const mockOrderData = useContext(ShowOrdersContext);
-  const mockLabelData = useContext(PrintLabelsContext);
-  return (
-    <>
       {mockOrderData.map(({ id }) => {
         return <div key={id}>{id}</div>;
       })}
-      {mockLabelData.labels.map(({ id }) => {
-        return <div key={id}>{id}</div>;
-      })}
+      {applicationDispatch ? (
+        <button onClick={handleClick}>More Context Rows?!</button>
+      ) : (
+        <span>No Function Available</span>
+      )}
+      <WithPrintLabelsContext />
     </>
   );
 };
