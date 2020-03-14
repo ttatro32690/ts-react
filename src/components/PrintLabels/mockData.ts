@@ -1,4 +1,4 @@
-import { PrintLabels } from "./interface";
+import { PrintLabels } from "./types";
 
 const mockData: PrintLabels = {
   supplierId: 1,

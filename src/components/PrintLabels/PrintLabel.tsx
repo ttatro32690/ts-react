@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { PrintLabels } from "./interface";
-import { createApplicationContext } from "../../createContext";
+import { PrintLabels } from "./types";
+import { createApplicationContext } from "../../GlobalState/createApplicationContext";
 
 const PrintLabelsContext = createApplicationContext<PrintLabels>(undefined);
 

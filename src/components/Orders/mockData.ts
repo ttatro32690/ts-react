@@ -1,4 +1,4 @@
-import { Order, OrderStatus, DestinationWarehouse } from "./interface";
+import { Order, OrderStatus, DestinationWarehouse } from "./types";
 
 const mockData: Order[] = [
   {

@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "15ee3a3b223e39a3bc35";
+/******/ 	var hotCurrentHash = "33226cea497e9267feca";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -796,6 +796,63 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/ApplicationContainer.tsx":
+/*!**************************************!*\
+  !*** ./src/ApplicationContainer.tsx ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const ApplicationContainer = () => {
+    return react_1.default.createElement("div", null, "testing");
+};
+exports.ApplicationContainer = ApplicationContainer;
+
+
+/***/ }),
+
+/***/ "./src/GlobalState/createApplicationContext.ts":
+/*!*****************************************************!*\
+  !*** ./src/GlobalState/createApplicationContext.ts ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __webpack_require__(/*! react */ "react");
+const createApplicationContext = (contextData) => {
+    return react_1.createContext(contextData);
+};
+exports.createApplicationContext = createApplicationContext;
+
+
+/***/ }),
+
+/***/ "./src/GlobalState/index.ts":
+/*!**********************************!*\
+  !*** ./src/GlobalState/index.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var createApplicationContext_1 = __webpack_require__(/*! ./createApplicationContext */ "./src/GlobalState/createApplicationContext.ts");
+exports.createApplicationContext = createApplicationContext_1.createApplicationContext;
+
+
+/***/ }),
+
 /***/ "./src/app.tsx":
 /*!*********************!*\
   !*** ./src/app.tsx ***!
@@ -814,306 +871,31 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-const Hello_1 = __webpack_require__(/*! ./components/Hello */ "./src/components/Hello.tsx");
-const createContext_1 = __webpack_require__(/*! ./createContext */ "./src/createContext.ts");
-const PrintLabels_1 = __webpack_require__(/*! ./components/PrintLabels */ "./src/components/PrintLabels/index.ts");
-exports.PrintLabelsContext = PrintLabels_1.PrintLabelsContext;
-const Orders_1 = __webpack_require__(/*! ./components/Orders */ "./src/components/Orders/index.ts");
+const ApplicationContainer_1 = __webpack_require__(/*! ./ApplicationContainer */ "./src/ApplicationContainer.tsx");
+const GlobalState_1 = __webpack_require__(/*! ./GlobalState */ "./src/GlobalState/index.ts");
+const applicationReducer = (state, action) => {
+    switch (action.type) {
+        default:
+            return state;
+    }
+};
 const initializer = {
     supplierId: 1,
     fulfillmentCustomerId: 1,
     isAdmin: true,
-    applicationState: {
-        products: {
-            id: 'test'
-        },
-        orders: Orders_1.mockData
-    }
+    globalState: {}
 };
-const applicationReducer = (state, action) => {
-    switch (action.type) {
-        case "add":
-            return Object.assign(Object.assign({}, state), { orderData: [
-                    ...state.applicationState.orderData,
-                    {
-                        id: "WHS-123",
-                        status: Orders_1.OrderStatus.Received,
-                        destinationWarehouse: Orders_1.DestinationWarehouse.Cranberry,
-                        sourceWarehouse: "California",
-                        expectedShipDate: "12/20/2020"
-                    }
-                ], printLabels: Object.assign(Object.assign({}, state.applicationState.printLabels), { labels: [
-                        ...state.applicationState.printLabels.labels,
-                        {
-                            id: "1",
-                            previouslyPrinted: true
-                        }
-                    ] }) });
-        case "reset":
-            return { printLabels: PrintLabels_1.mockData, orderData: Orders_1.mockData };
-        default:
-            throw new Error();
-    }
-};
-const ShowOrdersContext = createContext_1.createApplicationContext(undefined);
-exports.ShowOrdersContext = ShowOrdersContext;
-const ApplicationDispatchContext = createContext_1.createApplicationContext(initializer);
-exports.ApplicationDispatchContext = ApplicationDispatchContext;
+const GlobalContext = GlobalState_1.createApplicationContext({
+    applicationState: undefined,
+    applicationDispatch: undefined
+});
 const App = () => {
     const [applicationState, applicationDispatch] = react_1.useReducer(applicationReducer, initializer);
-    const handleClick = () => {
-        applicationDispatch({ type: "add" });
-    };
     return (react_1.default.createElement(react_1.default.Fragment, null,
-        react_1.default.createElement("button", { onClick: handleClick }, "Add More Rows!"),
-        react_1.default.createElement(ApplicationDispatchContext.Provider, { value: applicationState },
-            react_1.default.createElement(PrintLabels_1.PrintLabelsContext.Provider, { value: applicationState.printLabels },
-                react_1.default.createElement(ShowOrdersContext.Provider, { value: applicationState.orderData },
-                    react_1.default.createElement(Hello_1.Hello, null))))));
+        react_1.default.createElement(GlobalContext.Provider, { value: { applicationState, applicationDispatch } },
+            react_1.default.createElement(ApplicationContainer_1.ApplicationContainer, null))));
 };
 exports.App = App;
-
-
-/***/ }),
-
-/***/ "./src/components/Hello.tsx":
-/*!**********************************!*\
-  !*** ./src/components/Hello.tsx ***!
-  \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-const app_1 = __webpack_require__(/*! ../app */ "./src/app.tsx");
-const PrintLabels_1 = __webpack_require__(/*! ../components/PrintLabels */ "./src/components/PrintLabels/index.ts");
-// 'HelloProps' describes the shape of props.
-// State is never set so we use the '{}' type.
-exports.Hello = () => {
-    return (react_1.default.createElement(react_1.default.Fragment, null,
-        react_1.default.createElement(FakeComponentForTree, null)));
-};
-const FakeComponentForTree = () => {
-    const { applicationDispatch } = react_1.useContext(app_1.ApplicationDispatchContext);
-    const handleClick = () => {
-        applicationDispatch({ type: "add" });
-    };
-    return (react_1.default.createElement(react_1.default.Fragment, null,
-        react_1.default.createElement("button", { onClick: handleClick }, "Nested Rows!"),
-        react_1.default.createElement(FakeComponentForTree2, null)));
-};
-const FakeComponentForTree2 = () => {
-    const { applicationDispatch } = react_1.useContext(app_1.ApplicationDispatchContext);
-    const mockOrderData = react_1.useContext(app_1.ShowOrdersContext);
-    const handleClick = () => {
-        applicationDispatch({ type: "reset" });
-    };
-    return (react_1.default.createElement(react_1.default.Fragment, null,
-        mockOrderData.map(({ id }) => {
-            return react_1.default.createElement("div", { key: id }, id);
-        }),
-        applicationDispatch ? (react_1.default.createElement("button", { onClick: handleClick }, "More Context Rows?!")) : (react_1.default.createElement("span", null, "No Function Available")),
-        react_1.default.createElement(PrintLabels_1.WithPrintLabelsContext, null)));
-};
-
-
-/***/ }),
-
-/***/ "./src/components/Orders/index.ts":
-/*!****************************************!*\
-  !*** ./src/components/Orders/index.ts ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var interface_1 = __webpack_require__(/*! ./interface */ "./src/components/Orders/interface.ts");
-exports.OrderStatus = interface_1.OrderStatus;
-exports.DestinationWarehouse = interface_1.DestinationWarehouse;
-var mockData_1 = __webpack_require__(/*! ./mockData */ "./src/components/Orders/mockData.ts");
-exports.mockData = mockData_1.mockData;
-
-
-/***/ }),
-
-/***/ "./src/components/Orders/interface.ts":
-/*!********************************************!*\
-  !*** ./src/components/Orders/interface.ts ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var OrderStatus;
-(function (OrderStatus) {
-    OrderStatus[OrderStatus["Submitted"] = 0] = "Submitted";
-    OrderStatus[OrderStatus["In-Transit"] = 1] = "In-Transit";
-    OrderStatus[OrderStatus["Cancelled"] = 2] = "Cancelled";
-    OrderStatus[OrderStatus["Partially-Received"] = 3] = "Partially-Received";
-    OrderStatus[OrderStatus["Received"] = 4] = "Received";
-})(OrderStatus || (OrderStatus = {}));
-exports.OrderStatus = OrderStatus;
-var DestinationWarehouse;
-(function (DestinationWarehouse) {
-    DestinationWarehouse[DestinationWarehouse["Cranberry"] = 0] = "Cranberry";
-    DestinationWarehouse[DestinationWarehouse["Hebron"] = 1] = "Hebron";
-    DestinationWarehouse[DestinationWarehouse["Perris"] = 2] = "Perris";
-})(DestinationWarehouse || (DestinationWarehouse = {}));
-exports.DestinationWarehouse = DestinationWarehouse;
-
-
-/***/ }),
-
-/***/ "./src/components/Orders/mockData.ts":
-/*!*******************************************!*\
-  !*** ./src/components/Orders/mockData.ts ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const interface_1 = __webpack_require__(/*! ./interface */ "./src/components/Orders/interface.ts");
-const mockData = [
-    {
-        id: "WHS-123",
-        status: interface_1.OrderStatus.Received,
-        destinationWarehouse: interface_1.DestinationWarehouse.Cranberry,
-        sourceWarehouse: "California",
-        expectedShipDate: "12/20/2020"
-    },
-    {
-        id: "WHS-121",
-        status: interface_1.OrderStatus.Cancelled,
-        destinationWarehouse: interface_1.DestinationWarehouse.Hebron,
-        sourceWarehouse: "New Jersey",
-        expectedShipDate: "2/20/2020"
-    }
-];
-exports.mockData = mockData;
-
-
-/***/ }),
-
-/***/ "./src/components/PrintLabels/PrintLabel.tsx":
-/*!***************************************************!*\
-  !*** ./src/components/PrintLabels/PrintLabel.tsx ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-const createContext_1 = __webpack_require__(/*! ../../createContext */ "./src/createContext.ts");
-const PrintLabelsContext = createContext_1.createApplicationContext(undefined);
-exports.PrintLabelsContext = PrintLabelsContext;
-const WithPrintLabelsContext = () => {
-    const mockLabelData = react_1.useContext(PrintLabelsContext);
-    return (react_1.default.createElement(react_1.default.Fragment, null,
-        react_1.default.createElement(PrintLabelData, Object.assign({}, mockLabelData))));
-};
-exports.WithPrintLabelsContext = WithPrintLabelsContext;
-const PrintLabelData = (props) => {
-    return (react_1.default.createElement(react_1.default.Fragment, null, props.labels.map(({ id }) => {
-        return react_1.default.createElement("div", { key: id }, id);
-    })));
-};
-
-
-/***/ }),
-
-/***/ "./src/components/PrintLabels/index.ts":
-/*!*********************************************!*\
-  !*** ./src/components/PrintLabels/index.ts ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var mockData_1 = __webpack_require__(/*! ./mockData */ "./src/components/PrintLabels/mockData.ts");
-exports.mockData = mockData_1.mockData;
-var PrintLabel_1 = __webpack_require__(/*! ./PrintLabel */ "./src/components/PrintLabels/PrintLabel.tsx");
-exports.WithPrintLabelsContext = PrintLabel_1.WithPrintLabelsContext;
-exports.PrintLabelsContext = PrintLabel_1.PrintLabelsContext;
-
-
-/***/ }),
-
-/***/ "./src/components/PrintLabels/mockData.ts":
-/*!************************************************!*\
-  !*** ./src/components/PrintLabels/mockData.ts ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const mockData = {
-    supplierId: 1,
-    numberOfLabels: 12,
-    labels: [
-        {
-            id: "wfs-1",
-            previouslyPrinted: true,
-        },
-        {
-            id: "wfs-2",
-            description: "this is a label for a table",
-            previouslyPrinted: false
-        },
-        {
-            id: "wfs-3",
-            description: "this is another label for a cable",
-            previouslyPrinted: true
-        }
-    ]
-};
-exports.mockData = mockData;
-
-
-/***/ }),
-
-/***/ "./src/createContext.ts":
-/*!******************************!*\
-  !*** ./src/createContext.ts ***!
-  \******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __webpack_require__(/*! react */ "react");
-const createApplicationContext = (contextData) => {
-    return react_1.createContext(contextData);
-};
-exports.createApplicationContext = createApplicationContext;
 
 
 /***/ }),
