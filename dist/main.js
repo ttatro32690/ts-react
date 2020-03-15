@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "7a88f8e75882b554cd0b";
+/******/ 	var hotCurrentHash = "15b06e816a9cff9ac2c8";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -16433,10 +16433,10 @@ module.exports = g;
 
 /***/ }),
 
-/***/ "./src/ApplicationContainer.tsx":
-/*!**************************************!*\
-  !*** ./src/ApplicationContainer.tsx ***!
-  \**************************************/
+/***/ "./src/Application/ApplicationContainer.tsx":
+/*!**************************************************!*\
+  !*** ./src/Application/ApplicationContainer.tsx ***!
+  \**************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16451,102 +16451,105 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-const app_1 = __webpack_require__(/*! ./app */ "./src/app.tsx");
+const app_1 = __webpack_require__(/*! ../app */ "./src/app.tsx");
 const react_bootstrap_1 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
-const mockNames = [
-    {
-        id: 1,
-        firstName: "Mark",
-        lastName: "Otto",
-        userName: "@mdo"
-    },
-    {
-        id: 2,
-        firstName: "Jacob",
-        lastName: "Thornton",
-        userName: "@fat"
-    },
-    {
-        id: 3,
-        firstName: "Larry the Bird",
-        lastName: "",
-        userName: "@twitter"
-    }
-];
+const Products_1 = __webpack_require__(/*! ../components/Products */ "./src/components/Products/index.ts");
+const Products_2 = __webpack_require__(/*! ../components/Products */ "./src/components/Products/index.ts");
 const ApplicationContainer = () => {
     const { applicationDispatch } = react_1.useContext(app_1.GlobalContext);
-    const handleClick = ({ name }) => {
-        applicationDispatch({ type: "selectName", payload: { name } });
+    const handleOrderSummaryClick = () => {
         applicationDispatch({ type: "openModal" });
     };
-    return react_1.default.createElement(ApplicationTable, { onClick: handleClick });
+    const handleProductTableClick = ({ product }) => {
+        applicationDispatch({
+            type: "addProductToOrder",
+            payload: { product }
+        });
+    };
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement("br", null),
+        react_1.default.createElement(react_bootstrap_1.Row, null,
+            react_1.default.createElement(react_bootstrap_1.Col, null,
+                react_1.default.createElement(Products_2.ProductsTable, { products: Products_1.mockProductData, handleClick: handleProductTableClick })),
+            react_1.default.createElement(react_bootstrap_1.Col, null,
+                react_1.default.createElement("h2", null, "Order Summary"),
+                react_1.default.createElement(react_bootstrap_1.Row, null,
+                    react_1.default.createElement(react_bootstrap_1.Col, null,
+                        react_1.default.createElement(react_bootstrap_1.Button, { onClick: handleOrderSummaryClick }, "Review Order!")),
+                    react_1.default.createElement(react_bootstrap_1.Col, null,
+                        react_1.default.createElement(react_bootstrap_1.Button, { onClick: () => {
+                                applicationDispatch({ type: "addAllRecommended" });
+                            } }, "Add All Recommended")))))));
 };
 exports.ApplicationContainer = ApplicationContainer;
-const ApplicationTable = ({ onClick }) => {
-    return (react_1.default.createElement(react_bootstrap_1.Row, null,
-        react_1.default.createElement(react_bootstrap_1.Col, null,
-            react_1.default.createElement(react_bootstrap_1.Table, { striped: true, bordered: true, hover: true, size: "sm" },
-                react_1.default.createElement("thead", null,
-                    react_1.default.createElement("tr", null,
-                        react_1.default.createElement("th", null, "#"),
-                        react_1.default.createElement("th", null, "First Name"),
-                        react_1.default.createElement("th", null, "Last Name"),
-                        react_1.default.createElement("th", null, "Username"),
-                        react_1.default.createElement("th", null))),
-                react_1.default.createElement("tbody", null, mockNames.map(({ id, firstName, lastName, userName }) => {
-                    return (react_1.default.createElement("tr", { key: id },
-                        react_1.default.createElement("td", null, id),
-                        react_1.default.createElement("td", null, firstName),
-                        react_1.default.createElement("td", null, lastName),
-                        react_1.default.createElement("td", null, userName),
-                        react_1.default.createElement("td", null,
-                            react_1.default.createElement(react_bootstrap_1.Button, { onClick: () => {
-                                    onClick({ name: { id, firstName, lastName, userName } });
-                                } }, "Add"))));
-                })))),
-        react_1.default.createElement(react_bootstrap_1.Col, null)));
+
+
+/***/ }),
+
+/***/ "./src/Application/ApplicationModal.tsx":
+/*!**********************************************!*\
+  !*** ./src/Application/ApplicationModal.tsx ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const app_1 = __webpack_require__(/*! ../app */ "./src/app.tsx");
+const react_bootstrap_1 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
+const Supplier_1 = __webpack_require__(/*! ../components/Supplier */ "./src/components/Supplier/index.ts");
+const Products_1 = __webpack_require__(/*! ../components/Products */ "./src/components/Products/index.ts");
+const ApplicationModal = () => {
+    const { applicationState: { globalState }, applicationDispatch } = react_1.useContext(app_1.GlobalContext);
+    const handleClose = () => {
+        applicationDispatch({ type: "closeModal" });
+    };
+    const handleProductSummaryClick = ({ id }) => {
+        applicationDispatch({ type: "removeProductFromOrder", payload: { id } });
+    };
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement(react_bootstrap_1.Modal, { show: globalState.isModalOpen, onHide: handleClose },
+            react_1.default.createElement(react_bootstrap_1.Modal.Header, { closeButton: true },
+                react_1.default.createElement(react_bootstrap_1.Modal.Title, null,
+                    react_1.default.createElement(WrappedSupplierWidget, null))),
+            react_1.default.createElement(react_bootstrap_1.Modal.Body, null,
+                react_1.default.createElement(Products_1.ProductsSummary, { products: globalState.productSummary, handleClick: handleProductSummaryClick })),
+            react_1.default.createElement(react_bootstrap_1.Modal.Footer, null,
+                react_1.default.createElement(react_bootstrap_1.Button, { variant: "secondary", onClick: handleClose }, "Close"),
+                react_1.default.createElement(react_bootstrap_1.Button, { variant: "primary", onClick: handleClose }, "Save Changes")))));
+};
+exports.ApplicationModal = ApplicationModal;
+const WrappedSupplierWidget = () => {
+    const { applicationState: { globalState: { supplier } } } = react_1.useContext(app_1.GlobalContext);
+    return react_1.default.createElement(Supplier_1.SupplierWidget, Object.assign({}, supplier));
 };
 
 
 /***/ }),
 
-/***/ "./src/ApplicationModal.tsx":
+/***/ "./src/Application/index.ts":
 /*!**********************************!*\
-  !*** ./src/ApplicationModal.tsx ***!
+  !*** ./src/Application/index.ts ***!
   \**********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-const app_1 = __webpack_require__(/*! ./app */ "./src/app.tsx");
-const react_bootstrap_1 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
-const ApplicationModal = () => {
-    const { applicationState: { globalState }, applicationDispatch } = react_1.useContext(app_1.GlobalContext);
-    const handleClose = () => {
-        applicationDispatch({ type: "closeModal" });
-    };
-    return (react_1.default.createElement(ModalExample, { name: globalState.name, isModalOpen: globalState.isModalOpen, onClose: handleClose }));
-};
-exports.ApplicationModal = ApplicationModal;
-const ModalExample = ({ name, isModalOpen, onClose }) => {
-    return (react_1.default.createElement(react_bootstrap_1.Modal, { show: isModalOpen, onHide: onClose },
-        react_1.default.createElement(react_bootstrap_1.Modal.Header, { closeButton: true },
-            react_1.default.createElement(react_bootstrap_1.Modal.Title, null, name.firstName)),
-        react_1.default.createElement(react_bootstrap_1.Modal.Body, null, name.userName),
-        react_1.default.createElement(react_bootstrap_1.Modal.Footer, null,
-            react_1.default.createElement(react_bootstrap_1.Button, { variant: "secondary", onClick: onClose }, "Close"),
-            react_1.default.createElement(react_bootstrap_1.Button, { variant: "primary", onClick: onClose }, "Save Changes"))));
-};
+var ApplicationContainer_1 = __webpack_require__(/*! ./ApplicationContainer */ "./src/Application/ApplicationContainer.tsx");
+exports.ApplicationContainer = ApplicationContainer_1.ApplicationContainer;
+var ApplicationModal_1 = __webpack_require__(/*! ./ApplicationModal */ "./src/Application/ApplicationModal.tsx");
+exports.ApplicationModal = ApplicationModal_1.ApplicationModal;
 
 
 /***/ }),
@@ -16604,17 +16607,27 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-const ApplicationContainer_1 = __webpack_require__(/*! ./ApplicationContainer */ "./src/ApplicationContainer.tsx");
-const ApplicationModal_1 = __webpack_require__(/*! ./ApplicationModal */ "./src/ApplicationModal.tsx");
+const Application_1 = __webpack_require__(/*! ./Application */ "./src/Application/index.ts");
 const GlobalState_1 = __webpack_require__(/*! ./GlobalState */ "./src/GlobalState/index.ts");
+const Supplier_1 = __webpack_require__(/*! ./components/Supplier */ "./src/components/Supplier/index.ts");
+const react_bootstrap_1 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
 const applicationReducer = (state, action) => {
     switch (action.type) {
         case "openModal":
             return Object.assign(Object.assign({}, state), { globalState: Object.assign(Object.assign({}, state.globalState), { isModalOpen: true }) });
         case "closeModal":
             return Object.assign(Object.assign({}, state), { globalState: Object.assign(Object.assign({}, state.globalState), { isModalOpen: false }) });
-        case "selectName":
-            return Object.assign(Object.assign({}, state), { globalState: Object.assign(Object.assign({}, state.globalState), { name: action.payload.name }) });
+        case "addProductToOrder":
+            return Object.assign(Object.assign({}, state), { globalState: Object.assign(Object.assign({}, state.globalState), { productSummary: [
+                        ...state.globalState.productSummary,
+                        action.payload.product
+                    ] }) });
+        case "removeProductFromOrder":
+            return Object.assign(Object.assign({}, state), { globalState: Object.assign(Object.assign({}, state.globalState), { productSummary: state.globalState.productSummary.filter(({ id }) => {
+                        action.payload.id !== id;
+                    }) }) });
+        case "addAllRecommended":
+            return Object.assign(Object.assign({}, state), { globalState: Object.assign(Object.assign({}, state.globalState), { productSummary: state.globalState.productSummary.filter(({ recommendedQuantity }) => recommendedQuantity) }) });
         default:
             return state;
     }
@@ -16625,12 +16638,11 @@ const initializer = {
     isAdmin: true,
     globalState: {
         isModalOpen: false,
-        name: {
-            id: 0,
-            firstName: undefined,
-            lastName: undefined,
-            userName: undefined
-        }
+        supplier: {
+            name: "Tatro Test Supplier",
+            countryOfOrigin: Supplier_1.Countries.US
+        },
+        productSummary: []
     }
 };
 const GlobalContext = GlobalState_1.createApplicationContext({
@@ -16641,10 +16653,274 @@ exports.GlobalContext = GlobalContext;
 const App = () => {
     const [applicationState, applicationDispatch] = react_1.useReducer(applicationReducer, initializer);
     return (react_1.default.createElement(GlobalContext.Provider, { value: { applicationState, applicationDispatch } },
-        react_1.default.createElement(ApplicationContainer_1.ApplicationContainer, null),
-        react_1.default.createElement(ApplicationModal_1.ApplicationModal, null)));
+        react_1.default.createElement(react_bootstrap_1.Container, { fluid: true },
+            react_1.default.createElement(Supplier_1.SupplierHeader, Object.assign({}, applicationState.globalState.supplier, { identifiers: {
+                    supplierId: applicationState.supplierId,
+                    fulfillmentCustomerId: applicationState.fulfillmentCustomerId
+                } })),
+            react_1.default.createElement(Application_1.ApplicationContainer, null),
+            react_1.default.createElement(Application_1.ApplicationModal, null))));
 };
 exports.App = App;
+
+
+/***/ }),
+
+/***/ "./src/components/Products/ProductsSummary.tsx":
+/*!*****************************************************!*\
+  !*** ./src/components/Products/ProductsSummary.tsx ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const react_bootstrap_1 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
+const ProductsSummary = ({ products, handleClick }) => {
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement("h2", null, "SKU List"),
+        react_1.default.createElement(react_bootstrap_1.Table, { striped: true, bordered: true, hover: true, size: "sm" },
+            react_1.default.createElement("thead", null,
+                react_1.default.createElement("tr", null,
+                    react_1.default.createElement("th", null, "SKU"),
+                    react_1.default.createElement("th", null, "Description"),
+                    react_1.default.createElement("th", null, "Order Quantity"))),
+            react_1.default.createElement("tbody", null, products.map(({ id, description, recommendedQuantity }) => {
+                return (react_1.default.createElement("tr", { key: id },
+                    react_1.default.createElement("td", null, id),
+                    react_1.default.createElement("td", null, description),
+                    react_1.default.createElement("td", null, recommendedQuantity),
+                    react_1.default.createElement("td", null, handleClick && (react_1.default.createElement(react_bootstrap_1.Button, { onClick: () => {
+                            handleClick({ id });
+                        } }, "X")))));
+            })))));
+};
+exports.ProductsSummary = ProductsSummary;
+
+
+/***/ }),
+
+/***/ "./src/components/Products/ProductsTable.tsx":
+/*!***************************************************!*\
+  !*** ./src/components/Products/ProductsTable.tsx ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const react_bootstrap_1 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
+const ProductsTable = ({ products, handleClick }) => {
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement("h2", null, "SKU List"),
+        react_1.default.createElement(react_bootstrap_1.Table, { striped: true, bordered: true, hover: true, size: "sm" },
+            react_1.default.createElement("thead", null,
+                react_1.default.createElement("tr", null,
+                    react_1.default.createElement("th", null, "SKU"),
+                    react_1.default.createElement("th", null, "Description"),
+                    react_1.default.createElement("th", null, "On-Hand"),
+                    react_1.default.createElement("th", null, "On-Order"),
+                    react_1.default.createElement("th", null, "Recommended Quantity"))),
+            react_1.default.createElement("tbody", null, products.map(product => {
+                return (react_1.default.createElement("tr", { key: product.id },
+                    react_1.default.createElement("td", null, product.id),
+                    react_1.default.createElement("td", null, product.description),
+                    react_1.default.createElement("td", null, product.onHand),
+                    react_1.default.createElement("td", null, product.onOrder),
+                    react_1.default.createElement("td", null, product.recommendedQuantity),
+                    react_1.default.createElement("td", null, handleClick && (react_1.default.createElement(react_bootstrap_1.Button, { onClick: () => {
+                            handleClick({
+                                product
+                            });
+                        } }, "Add")))));
+            })))));
+};
+exports.ProductsTable = ProductsTable;
+
+
+/***/ }),
+
+/***/ "./src/components/Products/index.ts":
+/*!******************************************!*\
+  !*** ./src/components/Products/index.ts ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var mockData_1 = __webpack_require__(/*! ./mockData */ "./src/components/Products/mockData.ts");
+exports.mockProductData = mockData_1.mockProductData;
+var ProductsTable_1 = __webpack_require__(/*! ./ProductsTable */ "./src/components/Products/ProductsTable.tsx");
+exports.ProductsTable = ProductsTable_1.ProductsTable;
+var ProductsSummary_1 = __webpack_require__(/*! ./ProductsSummary */ "./src/components/Products/ProductsSummary.tsx");
+exports.ProductsSummary = ProductsSummary_1.ProductsSummary;
+
+
+/***/ }),
+
+/***/ "./src/components/Products/mockData.ts":
+/*!*********************************************!*\
+  !*** ./src/components/Products/mockData.ts ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const mockProductData = [
+    {
+        id: "SKU-1",
+        description: "Rug",
+        onHand: 14,
+        onOrder: 0,
+        recommendedQuantity: 12
+    },
+    {
+        id: "SKU-2",
+        description: "Table",
+        onHand: 1,
+        onOrder: 1,
+        recommendedQuantity: 3
+    },
+    {
+        id: "SKU-3",
+        description: "Chair",
+        onHand: 3,
+        onOrder: 1,
+        recommendedQuantity: 2
+    },
+    {
+        id: "SKU-4",
+        description: "Dining Set",
+        onHand: 14,
+        onOrder: 12,
+        recommendedQuantity: 0
+    },
+    {
+        id: "SKU-5",
+        description: "Dish Rack",
+        onHand: 1,
+        onOrder: 1,
+        recommendedQuantity: 0
+    },
+    {
+        id: "SKU-6",
+        description: "Bed Frame",
+        onHand: 46,
+        onOrder: 4,
+        recommendedQuantity: 12
+    }
+];
+exports.mockProductData = mockProductData;
+
+
+/***/ }),
+
+/***/ "./src/components/Supplier/SupplierHeader.tsx":
+/*!****************************************************!*\
+  !*** ./src/components/Supplier/SupplierHeader.tsx ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const react_bootstrap_1 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
+const SupplierHeader = ({ name, countryOfOrigin, identifiers }) => {
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement("h2", null,
+            "Welcome: ",
+            name),
+        react_1.default.createElement("h3", null, countryOfOrigin),
+        react_1.default.createElement(react_bootstrap_1.Container, { fluid: true },
+            react_1.default.createElement("div", null, Object.keys(identifiers).map(key => {
+                return react_1.default.createElement("div", null, `${key}: ${identifiers[key]}`);
+            })))));
+};
+exports.SupplierHeader = SupplierHeader;
+
+
+/***/ }),
+
+/***/ "./src/components/Supplier/SupplierWidget.tsx":
+/*!****************************************************!*\
+  !*** ./src/components/Supplier/SupplierWidget.tsx ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const SupplierWidget = ({ name, countryOfOrigin }) => {
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement("div", null, `${name} - ${countryOfOrigin}`)));
+};
+exports.SupplierWidget = SupplierWidget;
+
+
+/***/ }),
+
+/***/ "./src/components/Supplier/index.ts":
+/*!******************************************!*\
+  !*** ./src/components/Supplier/index.ts ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var SupplierHeader_1 = __webpack_require__(/*! ./SupplierHeader */ "./src/components/Supplier/SupplierHeader.tsx");
+exports.SupplierHeader = SupplierHeader_1.SupplierHeader;
+var SupplierWidget_1 = __webpack_require__(/*! ./SupplierWidget */ "./src/components/Supplier/SupplierWidget.tsx");
+exports.SupplierWidget = SupplierWidget_1.SupplierWidget;
+var types_1 = __webpack_require__(/*! ./types */ "./src/components/Supplier/types.ts");
+exports.Countries = types_1.Countries;
+
+
+/***/ }),
+
+/***/ "./src/components/Supplier/types.ts":
+/*!******************************************!*\
+  !*** ./src/components/Supplier/types.ts ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Countries;
+(function (Countries) {
+    Countries["US"] = "United States";
+    Countries["CAN"] = "Canada";
+    Countries["EU"] = "Europe";
+    Countries["CH"] = "China";
+})(Countries || (Countries = {}));
+exports.Countries = Countries;
 
 
 /***/ }),

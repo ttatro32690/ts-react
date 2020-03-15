@@ -1,18 +1,9 @@
-import React, { useReducer, Dispatch } from "react";
-import { ApplicationContainer, Name } from "./ApplicationContainer";
-import { ApplicationModal } from "./ApplicationModal";
+import React, { useReducer } from "react";
+import { ApplicationContainer, ApplicationModal } from "./Application";
 import { Reducer, GlobalState, createApplicationContext } from "./GlobalState";
-
-type State = {
-  isModalOpen: boolean;
-  name: Name;
-};
-
-type Action =
-  | { type: "default" }
-  | { type: "openModal" }
-  | { type: "closeModal" }
-  | { type: "selectName"; payload: { name: Name } };
+import { State, Action } from "./types";
+import { SupplierHeader, Countries } from "./components/Supplier";
+import { Container } from "react-bootstrap";
 
 const applicationReducer: Reducer<State, Action> = (state, action) => {
   switch (action.type) {
@@ -26,12 +17,35 @@ const applicationReducer: Reducer<State, Action> = (state, action) => {
         ...state,
         globalState: { ...state.globalState, isModalOpen: false }
       };
-    case "selectName":
+    case "addProductToOrder":
       return {
         ...state,
         globalState: {
           ...state.globalState,
-          name: action.payload.name
+          productSummary: [
+            ...state.globalState.productSummary,
+            action.payload.product
+          ]
+        }
+      };
+    case "removeProductFromOrder":
+      return {
+        ...state,
+        globalState: {
+          ...state.globalState,
+          productSummary: state.globalState.productSummary.filter(({ id }) => {
+            action.payload.id !== id;
+          })
+        }
+      };
+    case "addAllRecommended":
+      return {
+        ...state,
+        globalState: {
+          ...state.globalState,
+          productSummary: state.globalState.productSummary.filter(
+            ({ recommendedQuantity }) => recommendedQuantity
+          )
         }
       };
     default:
@@ -45,12 +59,11 @@ const initializer: GlobalState<State> = {
   isAdmin: true,
   globalState: {
     isModalOpen: false,
-    name: {
-      id: 0,
-      firstName: undefined,
-      lastName: undefined,
-      userName: undefined
-    }
+    supplier: {
+      name: "Tatro Test Supplier",
+      countryOfOrigin: Countries.US
+    },
+    productSummary: []
   }
 };
 
@@ -67,8 +80,17 @@ const App = () => {
 
   return (
     <GlobalContext.Provider value={{ applicationState, applicationDispatch }}>
-      <ApplicationContainer />
-      <ApplicationModal />
+      <Container fluid>
+        <SupplierHeader
+          {...applicationState.globalState.supplier}
+          identifiers={{
+            supplierId: applicationState.supplierId,
+            fulfillmentCustomerId: applicationState.fulfillmentCustomerId
+          }}
+        />
+        <ApplicationContainer />
+        <ApplicationModal />
+      </Container>
     </GlobalContext.Provider>
   );
 };
