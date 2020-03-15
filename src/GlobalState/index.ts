@@ -1,5 +1,5 @@
 export { createApplicationContext } from "./createApplicationContext";
 export {
   Reducer,
-  GlobalState
+  GlobalState,
 } from "./types";
