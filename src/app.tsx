@@ -1,19 +1,12 @@
 import React, { useReducer } from "react";
 import { ApplicationContainer } from "./ApplicationContainer";
-import {
-  Reducer,
-  GlobalState,
-  createApplicationContext
-} from "./GlobalState";
+import { Reducer, GlobalState, createApplicationContext } from "./GlobalState";
 
 type State = {};
 
-type Action = { type: "default" } | {type: 'newOrder', payload: {id: 'test'}};
+type Action = { type: "default" };
 
-const applicationReducer: Reducer<State, Action> = (
-  state,
-  action
-) => {
+const applicationReducer: Reducer<State, Action> = (state, action) => {
   switch (action.type) {
     default:
       return state;
@@ -33,13 +26,14 @@ const GlobalContext = createApplicationContext({
 });
 
 const App = () => {
-  const [applicationState, applicationDispatch] = useReducer(applicationReducer, initializer);
+  const [applicationState, applicationDispatch] = useReducer(
+    applicationReducer,
+    initializer
+  );
 
   return (
     <>
-      <GlobalContext.Provider
-        value={{ applicationState, applicationDispatch }}
-      >
+      <GlobalContext.Provider value={{ applicationState, applicationDispatch }}>
         <ApplicationContainer />
       </GlobalContext.Provider>
     </>
