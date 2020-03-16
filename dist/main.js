@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "51aa058c39e516e699f0";
+/******/ 	var hotCurrentHash = "43be381ed53c2549e53f";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -16755,7 +16755,6 @@ const ProductRow = ({ product, handleClick }) => {
     const [stateProduct, setStateProduct] = react_1.useState(product);
     const [recommendedQuantity, setRecommendedQuantity] = react_1.useState(product.recommendedQuantity);
     const handleFormControlChange = (e) => {
-        console.log(e.target.value);
         setStateProduct(Object.assign(Object.assign({}, stateProduct), { recommendedQuantity: parseInt(e.target.value) }));
         setRecommendedQuantity(parseInt(e.target.value));
     };
@@ -16770,7 +16769,7 @@ const ProductRow = ({ product, handleClick }) => {
                 react_1.default.createElement(react_bootstrap_1.InputGroup.Prepend, null,
                     react_1.default.createElement(react_bootstrap_1.Button, { onClick: () => {
                             handleClick({
-                                product
+                                product: stateProduct
                             });
                         }, "outline-secondary": "true" }, "Add")),
                 react_1.default.createElement(react_bootstrap_1.FormControl, { value: recommendedQuantity.toString(), onChange: handleFormControlChange, "aria-describedby": "basic-addon1" })))))));

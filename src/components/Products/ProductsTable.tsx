@@ -50,7 +50,6 @@ const ProductRow = ({ product, handleClick }: ProductRowProps) => {
   );
 
   const handleFormControlChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
     setStateProduct({
       ...stateProduct,
       recommendedQuantity: parseInt(e.target.value)
@@ -73,7 +72,7 @@ const ProductRow = ({ product, handleClick }: ProductRowProps) => {
                 <Button
                   onClick={() => {
                     handleClick({
-                      product
+                      product: stateProduct
                     });
                   }}
                   outline-secondary="true"
