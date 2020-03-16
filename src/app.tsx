@@ -18,14 +18,18 @@ const applicationReducer: Reducer<State, Action> = (state, action) => {
         globalState: { ...state.globalState, isModalOpen: false }
       };
     case "addProductToOrder":
+      const isInProductSummary =
+        state.globalState.productSummary
+          .map(({ id }) => id)
+          .indexOf(action.payload.product.id) !== -1;
+
       return {
         ...state,
         globalState: {
           ...state.globalState,
-          productSummary: [
-            ...state.globalState.productSummary,
-            action.payload.product
-          ]
+          productSummary: isInProductSummary
+            ? [...state.globalState.productSummary]
+            : [...state.globalState.productSummary, action.payload.product]
         }
       };
     case "removeProductFromOrder":
@@ -34,7 +38,7 @@ const applicationReducer: Reducer<State, Action> = (state, action) => {
         globalState: {
           ...state.globalState,
           productSummary: state.globalState.productSummary.filter(({ id }) => {
-            action.payload.id !== id;
+            return action.payload.id !== id;
           })
         }
       };
@@ -43,8 +47,10 @@ const applicationReducer: Reducer<State, Action> = (state, action) => {
         ...state,
         globalState: {
           ...state.globalState,
-          productSummary: state.globalState.productSummary.filter(
-            ({ recommendedQuantity }) => recommendedQuantity
+          productSummary: action.payload.products.filter(
+            ({ recommendedQuantity }) => {
+              return recommendedQuantity > 0;
+            }
           )
         }
       };

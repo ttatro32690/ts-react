@@ -1,11 +1,17 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { GlobalContext } from "../app";
 import { Button, Col, Row } from "react-bootstrap";
 import { mockProductData } from "../components/Products";
-import { ProductsTable, HandleProductAddClick } from "../components/Products";
+import {
+  ProductsTable,
+  ProductsSummary,
+  HandleProductAddClick
+} from "../components/Products";
 
 const ApplicationContainer = () => {
-  const { applicationDispatch } = useContext(GlobalContext);
+  const { applicationState, applicationDispatch } = useContext(GlobalContext);
+  // Fake a useQuery fetch (kind of?)
+  const [products] = useState(mockProductData);
 
   const handleOrderSummaryClick = () => {
     applicationDispatch({ type: "openModal" });
@@ -24,13 +30,17 @@ const ApplicationContainer = () => {
       <Row>
         <Col>
           <ProductsTable
-            products={mockProductData}
+            products={products}
             handleClick={handleProductTableClick}
           />
         </Col>
-
         <Col>
           <h2>Order Summary</h2>
+          <Row>
+            <ProductsSummary
+              products={applicationState.globalState.productSummary}
+            />
+          </Row>
           <Row>
             <Col>
               <Button onClick={handleOrderSummaryClick}>Review Order!</Button>
@@ -38,7 +48,10 @@ const ApplicationContainer = () => {
             <Col>
               <Button
                 onClick={() => {
-                  applicationDispatch({ type: "addAllRecommended" });
+                  applicationDispatch({
+                    type: "addAllRecommended",
+                    payload: { products }
+                  });
                 }}
               >
                 Add All Recommended

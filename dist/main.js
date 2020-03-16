@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "15b06e816a9cff9ac2c8";
+/******/ 	var hotCurrentHash = "51aa058c39e516e699f0";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -16456,7 +16456,9 @@ const react_bootstrap_1 = __webpack_require__(/*! react-bootstrap */ "./node_mod
 const Products_1 = __webpack_require__(/*! ../components/Products */ "./src/components/Products/index.ts");
 const Products_2 = __webpack_require__(/*! ../components/Products */ "./src/components/Products/index.ts");
 const ApplicationContainer = () => {
-    const { applicationDispatch } = react_1.useContext(app_1.GlobalContext);
+    const { applicationState, applicationDispatch } = react_1.useContext(app_1.GlobalContext);
+    // Fake a useQuery fetch (kind of?)
+    const [products] = react_1.useState(Products_1.mockProductData);
     const handleOrderSummaryClick = () => {
         applicationDispatch({ type: "openModal" });
     };
@@ -16470,15 +16472,20 @@ const ApplicationContainer = () => {
         react_1.default.createElement("br", null),
         react_1.default.createElement(react_bootstrap_1.Row, null,
             react_1.default.createElement(react_bootstrap_1.Col, null,
-                react_1.default.createElement(Products_2.ProductsTable, { products: Products_1.mockProductData, handleClick: handleProductTableClick })),
+                react_1.default.createElement(Products_2.ProductsTable, { products: products, handleClick: handleProductTableClick })),
             react_1.default.createElement(react_bootstrap_1.Col, null,
                 react_1.default.createElement("h2", null, "Order Summary"),
+                react_1.default.createElement(react_bootstrap_1.Row, null,
+                    react_1.default.createElement(Products_2.ProductsSummary, { products: applicationState.globalState.productSummary })),
                 react_1.default.createElement(react_bootstrap_1.Row, null,
                     react_1.default.createElement(react_bootstrap_1.Col, null,
                         react_1.default.createElement(react_bootstrap_1.Button, { onClick: handleOrderSummaryClick }, "Review Order!")),
                     react_1.default.createElement(react_bootstrap_1.Col, null,
                         react_1.default.createElement(react_bootstrap_1.Button, { onClick: () => {
-                                applicationDispatch({ type: "addAllRecommended" });
+                                applicationDispatch({
+                                    type: "addAllRecommended",
+                                    payload: { products }
+                                });
                             } }, "Add All Recommended")))))));
 };
 exports.ApplicationContainer = ApplicationContainer;
@@ -16618,16 +16625,20 @@ const applicationReducer = (state, action) => {
         case "closeModal":
             return Object.assign(Object.assign({}, state), { globalState: Object.assign(Object.assign({}, state.globalState), { isModalOpen: false }) });
         case "addProductToOrder":
-            return Object.assign(Object.assign({}, state), { globalState: Object.assign(Object.assign({}, state.globalState), { productSummary: [
-                        ...state.globalState.productSummary,
-                        action.payload.product
-                    ] }) });
+            const isInProductSummary = state.globalState.productSummary
+                .map(({ id }) => id)
+                .indexOf(action.payload.product.id) !== -1;
+            return Object.assign(Object.assign({}, state), { globalState: Object.assign(Object.assign({}, state.globalState), { productSummary: isInProductSummary
+                        ? [...state.globalState.productSummary]
+                        : [...state.globalState.productSummary, action.payload.product] }) });
         case "removeProductFromOrder":
             return Object.assign(Object.assign({}, state), { globalState: Object.assign(Object.assign({}, state.globalState), { productSummary: state.globalState.productSummary.filter(({ id }) => {
-                        action.payload.id !== id;
+                        return action.payload.id !== id;
                     }) }) });
         case "addAllRecommended":
-            return Object.assign(Object.assign({}, state), { globalState: Object.assign(Object.assign({}, state.globalState), { productSummary: state.globalState.productSummary.filter(({ recommendedQuantity }) => recommendedQuantity) }) });
+            return Object.assign(Object.assign({}, state), { globalState: Object.assign(Object.assign({}, state.globalState), { productSummary: action.payload.products.filter(({ recommendedQuantity }) => {
+                        return recommendedQuantity > 0;
+                    }) }) });
         default:
             return state;
     }
@@ -16714,11 +16725,15 @@ exports.ProductsSummary = ProductsSummary;
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 const react_bootstrap_1 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
 const ProductsTable = ({ products, handleClick }) => {
     return (react_1.default.createElement(react_1.default.Fragment, null,
@@ -16732,20 +16747,34 @@ const ProductsTable = ({ products, handleClick }) => {
                     react_1.default.createElement("th", null, "On-Order"),
                     react_1.default.createElement("th", null, "Recommended Quantity"))),
             react_1.default.createElement("tbody", null, products.map(product => {
-                return (react_1.default.createElement("tr", { key: product.id },
-                    react_1.default.createElement("td", null, product.id),
-                    react_1.default.createElement("td", null, product.description),
-                    react_1.default.createElement("td", null, product.onHand),
-                    react_1.default.createElement("td", null, product.onOrder),
-                    react_1.default.createElement("td", null, product.recommendedQuantity),
-                    react_1.default.createElement("td", null, handleClick && (react_1.default.createElement(react_bootstrap_1.Button, { onClick: () => {
-                            handleClick({
-                                product
-                            });
-                        } }, "Add")))));
+                return (react_1.default.createElement(ProductRow, { key: product.id, product: product, handleClick: handleClick }));
             })))));
 };
 exports.ProductsTable = ProductsTable;
+const ProductRow = ({ product, handleClick }) => {
+    const [stateProduct, setStateProduct] = react_1.useState(product);
+    const [recommendedQuantity, setRecommendedQuantity] = react_1.useState(product.recommendedQuantity);
+    const handleFormControlChange = (e) => {
+        console.log(e.target.value);
+        setStateProduct(Object.assign(Object.assign({}, stateProduct), { recommendedQuantity: parseInt(e.target.value) }));
+        setRecommendedQuantity(parseInt(e.target.value));
+    };
+    return (react_1.default.createElement("tr", null,
+        react_1.default.createElement("td", null, product.id),
+        react_1.default.createElement("td", null, product.description),
+        react_1.default.createElement("td", null, product.onHand),
+        react_1.default.createElement("td", null, product.onOrder),
+        react_1.default.createElement("td", null, product.recommendedQuantity),
+        react_1.default.createElement("td", null, handleClick && (react_1.default.createElement(react_1.default.Fragment, null,
+            react_1.default.createElement(react_bootstrap_1.InputGroup, { className: "mb-3" },
+                react_1.default.createElement(react_bootstrap_1.InputGroup.Prepend, null,
+                    react_1.default.createElement(react_bootstrap_1.Button, { onClick: () => {
+                            handleClick({
+                                product
+                            });
+                        }, "outline-secondary": "true" }, "Add")),
+                react_1.default.createElement(react_bootstrap_1.FormControl, { value: recommendedQuantity.toString(), onChange: handleFormControlChange, "aria-describedby": "basic-addon1" })))))));
+};
 
 
 /***/ }),
@@ -16852,7 +16881,7 @@ const SupplierHeader = ({ name, countryOfOrigin, identifiers }) => {
         react_1.default.createElement("h3", null, countryOfOrigin),
         react_1.default.createElement(react_bootstrap_1.Container, { fluid: true },
             react_1.default.createElement("div", null, Object.keys(identifiers).map(key => {
-                return react_1.default.createElement("div", null, `${key}: ${identifiers[key]}`);
+                return react_1.default.createElement("div", { key: key }, `${key}: ${identifiers[key]}`);
             })))));
 };
 exports.SupplierHeader = SupplierHeader;

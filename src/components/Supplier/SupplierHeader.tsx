@@ -14,7 +14,7 @@ const SupplierHeader = ({
       <Container fluid>
         <div>
           {Object.keys(identifiers).map(key => {
-            return <div>{`${key}: ${identifiers[key]}`}</div>;
+            return <div key={key}>{`${key}: ${identifiers[key]}`}</div>;
           })}
         </div>
       </Container>

@@ -11,7 +11,7 @@ type Action =
   | { type: "default" }
   | { type: "openModal" }
   | { type: "closeModal" }
-  | { type: "addAllRecommended" }
+  | { type: "addAllRecommended"; payload: { products: Product[] } }
   | { type: "addProductToOrder"; payload: { product: Product } }
   | { type: "removeProductFromOrder"; payload: { id: Product["id"] } };
 
