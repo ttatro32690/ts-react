@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "43be381ed53c2549e53f";
+/******/ 	var hotCurrentHash = "f90090f796f67b92a5da";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -16653,7 +16653,7 @@ const initializer = {
             name: "Tatro Test Supplier",
             countryOfOrigin: Supplier_1.Countries.US
         },
-        productSummary: []
+        productSummary: [],
     }
 };
 const GlobalContext = GlobalState_1.createApplicationContext({

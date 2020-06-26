@@ -69,7 +69,7 @@ const initializer: GlobalState<State> = {
       name: "Tatro Test Supplier",
       countryOfOrigin: Countries.US
     },
-    productSummary: []
+    productSummary: [],
   }
 };
 
