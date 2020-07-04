@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "1e9a8c324cb92545047a";
+/******/ 	var hotCurrentHash = "33226cea497e9267feca";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -796,6 +796,63 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/ApplicationContainer.tsx":
+/*!**************************************!*\
+  !*** ./src/ApplicationContainer.tsx ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const ApplicationContainer = () => {
+    return react_1.default.createElement("div", null, "testing");
+};
+exports.ApplicationContainer = ApplicationContainer;
+
+
+/***/ }),
+
+/***/ "./src/GlobalState/createApplicationContext.ts":
+/*!*****************************************************!*\
+  !*** ./src/GlobalState/createApplicationContext.ts ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __webpack_require__(/*! react */ "react");
+const createApplicationContext = (contextData) => {
+    return react_1.createContext(contextData);
+};
+exports.createApplicationContext = createApplicationContext;
+
+
+/***/ }),
+
+/***/ "./src/GlobalState/index.ts":
+/*!**********************************!*\
+  !*** ./src/GlobalState/index.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var createApplicationContext_1 = __webpack_require__(/*! ./createApplicationContext */ "./src/GlobalState/createApplicationContext.ts");
+exports.createApplicationContext = createApplicationContext_1.createApplicationContext;
+
+
+/***/ }),
+
 /***/ "./src/app.tsx":
 /*!*********************!*\
   !*** ./src/app.tsx ***!
@@ -805,38 +862,40 @@
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-const Hello_1 = __webpack_require__(/*! ./components/Hello */ "./src/components/Hello.tsx");
-exports.App = () => {
-    return React.createElement(React.Fragment, null,
-        React.createElement(Hello_1.Hello, { compiler: "test", framework: "react" }));
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
 };
-
-
-/***/ }),
-
-/***/ "./src/components/Hello.tsx":
-/*!**********************************!*\
-  !*** ./src/components/Hello.tsx ***!
-  \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-// 'HelloProps' describes the shape of props.
-// State is never set so we use the '{}' type.
-exports.Hello = (props) => {
-    return React.createElement("h1", null,
-        "Hello from ",
-        props.compiler,
-        " and ",
-        props.framework,
-        "!");
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
+const ApplicationContainer_1 = __webpack_require__(/*! ./ApplicationContainer */ "./src/ApplicationContainer.tsx");
+const GlobalState_1 = __webpack_require__(/*! ./GlobalState */ "./src/GlobalState/index.ts");
+const applicationReducer = (state, action) => {
+    switch (action.type) {
+        default:
+            return state;
+    }
 };
+const initializer = {
+    supplierId: 1,
+    fulfillmentCustomerId: 1,
+    isAdmin: true,
+    globalState: {}
+};
+const GlobalContext = GlobalState_1.createApplicationContext({
+    applicationState: undefined,
+    applicationDispatch: undefined
+});
+const App = () => {
+    const [applicationState, applicationDispatch] = react_1.useReducer(applicationReducer, initializer);
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement(GlobalContext.Provider, { value: { applicationState, applicationDispatch } },
+            react_1.default.createElement(ApplicationContainer_1.ApplicationContainer, null))));
+};
+exports.App = App;
 
 
 /***/ }),
@@ -850,9 +909,16 @@ exports.Hello = (props) => {
 
 "use strict";
 
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-const ReactDOM = __webpack_require__(/*! react-dom */ "react-dom");
+const React = __importStar(__webpack_require__(/*! react */ "react"));
+const ReactDOM = __importStar(__webpack_require__(/*! react-dom */ "react-dom"));
 const app_1 = __webpack_require__(/*! ./app */ "./src/app.tsx");
 ReactDOM.render(React.createElement(app_1.App, null), document.getElementById("app-container"));
 
